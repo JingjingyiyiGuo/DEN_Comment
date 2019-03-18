@@ -1,3 +1,5 @@
+此部分源码作者信息介绍如下面的部分，当前库只是在学习的过程中根据自己的理解添加了注释。
+
 # Lifelong Learning with Dynamically Expandable Networks
 + Jaehong Yoon(KAIST, AItrics), Eunho Yang(KAIST, AItrics), Jeongtae Lee(UNIST), and Sung Ju Hwang(KAIST, AItrics)
 
