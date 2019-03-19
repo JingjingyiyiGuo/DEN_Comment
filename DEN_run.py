@@ -36,6 +36,8 @@ for task in range(10):
 	task_permutation.append(np.random.permutation(784))
 
 # 将训练测试和验证集的图像784维顺序都打乱我不太能理解，这样的话，那个图片的显示不就变了吗？
+# 答：这是一种MT（多任务）模式，分类问题是唯一的，但是多个任务是相互独立的。
+# 将维度顺序打乱了只是另外一种形式的表现形式。不同的打乱顺序代表不同的任务。
 trainXs, valXs, testXs = [], [], []
 for task in range(10):
 	trainXs.append(trainX[:, task_permutation[task]])
@@ -49,6 +51,9 @@ avg_perf = []   # 创建一个空列表
 
 # 终身学习中的任务控制
 # 以每个任务中的类别数作为总共要训练的任务数
+# 为什么待分类的数据是10类，这里就设10个任务，还有就是这些数据只是打乱了784维图片的维度排列，为什么就算是不同的任务了呢？
+# 答：我认为这里设置几个任务跟类别数是无关的，也可以设置5个。
+# 784维图片重新排列，是数字的不同表现形式，相当于另一门语言那个数字的写法，对于模型来说就是不同的任务了。
 for t in range(FLAGS.n_classes):
 	data = (trainXs[t], mnist.train.labels, valXs[t], mnist.validation.labels, testXs[t], mnist.test.labels)
 	model.sess = tf.Session()
@@ -58,7 +63,7 @@ for t in range(FLAGS.n_classes):
 	model.task_indices.append(t+1)
 	model.load_params(params, time = 1)
 	perf, sparsity, expansion = model.add_task(t+1, data)  # add_task是DEN模型调用的核心
-	writer = tf.summary.FileWriter('./improved_graph2', model.sess.graph)  # 这是为了可视化计算图自己加的
+	# writer = tf.summary.FileWriter('./improved_graph2', model.sess.graph)  # 这是为了可视化计算图自己加的
 
 	params = model.get_params()  # 每一轮训练完的参数会存储起来
 	model.destroy_graph()
