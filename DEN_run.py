@@ -4,7 +4,7 @@ import numpy as np
 import DEN
 from tensorflow.examples.tutorials.mnist import input_data
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3,4"  # 这是为了控制使用哪块GPU自己加的
+os.environ["CUDA_VISIBLE_DEVICES"] = "4，5"  # 这是为了控制使用哪块GPU自己加的
 
 np.random.seed(1004)
 flags = tf.app.flags
@@ -66,6 +66,8 @@ for t in range(FLAGS.n_classes):
 	# writer = tf.summary.FileWriter('./improved_graph2', model.sess.graph)  # 这是为了可视化计算图自己加的
 
 	params = model.get_params()  # 每一轮训练完的参数会存储起来
+	print("查看参数存储")
+	print(params)
 	model.destroy_graph()
 	model.sess.close()
 

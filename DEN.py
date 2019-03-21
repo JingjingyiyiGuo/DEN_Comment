@@ -58,13 +58,14 @@ class DEN(object):
                     w = tf.get_variable(scope_name, initializer = param, trainable = True)
                     self.params[w.name] = w
                 elif 'layer%d'%self.n_layers in scope_name:
+                    # 如果参数不是当前任务的参数，则不被加入训练列表，因为trainable = False
                     w = tf.get_variable(scope_name, initializer = param, trainable = False)
                     self.params[w.name] = w
                 else:
                     pass
             return ;
 
-        if time == 1:
+        if time == 1:   # 如果是任务一，则初始化prev_W为字典
             self.prev_W = dict()
         for scope_name, param in params.items():
             trainable = True
@@ -81,6 +82,9 @@ class DEN(object):
 
     # w = self.create_variable('layer%d'%self.n_layers, 'weight_%d'%task_id, [prev_dim, self.n_classes], True)
     # 创建一个特定shape和指定名字的变量，存储进变量字典
+    # w = self.create_variable('layer%d'%(i+1), 'weight', [self.dims[i], self.dims[i+1]])
+    # new_w = self.create_variable('new', 'bw', [prev_dim, ex_k])
+    # new_b = self.create_variable('new', 'bb', [ex_k])
     def create_variable(self, scope, name, shape, trainable = True):
         with tf.variable_scope(scope):
             w = tf.get_variable(name, shape, trainable = trainable)
@@ -103,6 +107,7 @@ class DEN(object):
     # 用在build_model()中，应该是用来扩展模型底部的
     # w, b = self.extend_bottom('layer%d'%i, self.ex_k)
     # 将原参数和新参数concat起来，得到扩展后的新参数
+    # 扩展的参数会马上赋值到原有的参数列表
     def extend_bottom(self, scope, ex_k = 10):
         """ bottom layer expansion. scope is range of layer """
         w = self.get_variable(scope, 'weight')
